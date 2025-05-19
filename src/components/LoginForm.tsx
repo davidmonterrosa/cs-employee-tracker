@@ -25,7 +25,7 @@ const LoginForm = () => {
     const changeUser = (event: React.ChangeEvent<HTMLInputElement>) => {
         setUser({
             ...user,
-            [event.target.id]: '',
+            [event.target.id]: event.target.value.trim(),
         });
 
         if (loginError) {
@@ -44,8 +44,8 @@ const LoginForm = () => {
             push("/employees");
         } catch {
             setLoginError(true);
+            setLoggingIn(false);
         }
-        setLoggingIn(false);
     };
 
     useEffect(() => {
@@ -122,11 +122,12 @@ const LoginForm = () => {
                 <Checkbox
                     id="remember"
                     checked={rememberMe}
+                    className='cursor-pointer'
                     onCheckedChange={(checked) => setRememberMe(Boolean(checked))}
                 />
                 <Label htmlFor="remember">Remember me</Label>
             </div>
-            <Button onClick={handleLogin} disabled={!inputsFilled || loggingIn}>
+            <Button className='cursor-pointer' onClick={handleLogin} disabled={!inputsFilled || loggingIn}>
                 {loggingIn ? (
                     <>
                         <AiOutlineLoading className="h-6 w-6 animate-spin mr-3" />

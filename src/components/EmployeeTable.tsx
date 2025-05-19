@@ -53,10 +53,10 @@ const EmployeeTable = () => {
         }
     };
 
-    const changeSortByJob = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const changeSortByJob = (jobTitle: string) => {
         setSortBy("job-title");
-
-        setSortByJob(e.target.value);
+        console.log(jobTitle)
+        setSortByJob(jobTitle);
     };
 
     // Delete employee
@@ -142,42 +142,49 @@ const EmployeeTable = () => {
 
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="outline" className="text-sm text-gray-600">
+                                <Button variant="outline" className="text-sm text-gray-600 cursor-pointer">
                                     Name
                                     {sortBy === "name" ? <FaCaretDown className="ml-2" /> : sortBy === "name-reverse" ? <FaCaretUp className="ml-2" /> : ""}
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
-                                <DropdownMenuItem onClick={() => changeSortBy("name")}>A-Z</DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => changeSortBy("name-reverse")}>Z-A</DropdownMenuItem>
+                                <DropdownMenuItem className="cursor-pointer" onClick={() => changeSortBy("name")}>A-Z</DropdownMenuItem>
+                                <DropdownMenuItem className="cursor-pointer" onClick={() => changeSortBy("name-reverse")}>Z-A</DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
 
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="outline" className="text-sm text-gray-600">
+                                <Button variant="outline" className="text-sm text-gray-600 cursor-pointer">
                                     Hire date
                                     {sortBy === "hire-date" ? <FaCaretDown className="ml-2" /> : sortBy === "hire-date-reverse" ? <FaCaretUp className="ml-2" /> : ""}
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
-                                <DropdownMenuItem onClick={() => changeSortBy("hire-date")}>Newest First</DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => changeSortBy("hire-date-reverse")}>Oldest First</DropdownMenuItem>
+                                <DropdownMenuItem className="cursor-pointer" onClick={() => changeSortBy("hire-date")}>Newest First</DropdownMenuItem>
+                                <DropdownMenuItem className="cursor-pointer" onClick={() => changeSortBy("hire-date-reverse")}>Oldest First</DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
 
-                        <select
-                            className="ml-3 text-sm border rounded p-1"
-                            value={sortBy === "job-title" ? sortByJob : ""}
-                            onChange={changeSortByJob}
-                        >
-                            <option value="" disabled>
-                                Job title
-                            </option>
-                            <option value="Customer Support">Customer Support</option>
-                            <option value="IT Support Specialist">IT Support Specialist</option>
-                            <option value="Software Engineer">Software Engineer</option>
-                        </select>
+
+                        {/* Rebuilding dropdown select element */}
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" className="ml-3 text-sm border rounded p-1 cursor-pointer">
+                                    {sortByJob.trim() === '' ? "Job Title" : sortByJob}
+                                    {sortBy === "job-title" ? <FaCaretDown className="ml-2" /> : <FaCaretUp className="ml-2" />}
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className='bg-gray-300 z-50'>
+                                <DropdownMenuItem className='cursor-pointer'  onClick={() => changeSortByJob('')}>Job Title</DropdownMenuItem>
+                                <DropdownMenuItem className='cursor-pointer'  onClick={() => changeSortByJob('Customer Support')}>Customer Support</DropdownMenuItem>
+                                <DropdownMenuItem className='cursor-pointer'  onClick={() => changeSortByJob('IT Support Specialist')}>IT Support Specialist</DropdownMenuItem>
+                                <DropdownMenuItem className='cursor-pointer'  onClick={() => changeSortByJob('Software Engineer')}>Software Engineer</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+
+
+
                     </div>
                 </div>
             </div>
@@ -210,7 +217,7 @@ const EmployeeTable = () => {
                                 <TableCell>{employee.hireDate}</TableCell>
                                 <TableCell className="flex gap-3 justify-end">
                                     <EmployeeModal type="Edit" employee={employee} refreshEmployees={handleGetEmployees} />
-                                    <Button variant="destructive" onClick={() => handleDeleteEmployee(employee.id)}>
+                                    <Button className='cursor-pointer' variant="destructive" onClick={() => handleDeleteEmployee(employee.id)}>
                                         Delete
                                     </Button>
                                 </TableCell>

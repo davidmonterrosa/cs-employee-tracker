@@ -12,6 +12,7 @@ import { Calendar } from './ui/calendar';
 import { CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
 
 
 // Valid values for type: "Add" & "Edit"
@@ -131,7 +132,7 @@ const EmployeeModal = ({ type, employee, refreshEmployees }: { type: 'Add' | 'Ed
                 {/* <Button variant="outline">Edit Profile</Button> */}
                 <Button
                     color="success"
-                    className={type === "Add" ? "flex items-center gap-1" : ""}
+                    className={type === "Add" ? "flex items-center gap-1 cursor-pointer" : "cursor-pointer"}
                     onClick={onOpenModal}
                 >
                     {type === "Add" ? <FaPlus className="mt-[0.2rem]" /> : "Edit"}
@@ -166,6 +167,27 @@ const EmployeeModal = ({ type, employee, refreshEmployees }: { type: 'Add' | 'Ed
                                 value={employeeToChange.jobTitle}
                                 onChange={handleEmployeeToChange}
                             />
+                            <select name="Job Title" id="jobTitle" className='hover:cursor-pointer'>
+                                {
+                                    <option disabled selected value={employeeToChange.jobTitle}>{employeeToChange.jobTitle === '' ? "Select Job Title" : `${employeeToChange.jobTitle}`}</option>
+                                }
+                                <option className='hover:cursor-pointer' value="Customer Support">Customer Support</option>
+                                <option className='hover:cursor-pointer' value="IT Support Specialist">IT Support Specialist</option>
+                                <option className='hover:cursor-pointer' value="Software Engineer">Software Engineer</option>
+                            </select>
+                            {/* <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button id="jobTitle" variant="outline" className="ml-3 text-sm border rounded p-1 cursor-pointer">
+                                       {`${employeeToChange.jobTitle}`}
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className='bg-gray-300 z-50'>
+                                    <DropdownMenuItem className='cursor-pointer' onClick={handleEmployeeToChange}>Job Title</DropdownMenuItem>
+                                    <DropdownMenuItem className='cursor-pointer' onClick={handleEmployeeToChange}>Customer Support</DropdownMenuItem>
+                                    <DropdownMenuItem className='cursor-pointer' onClick={handleEmployeeToChange}>IT Support Specialist</DropdownMenuItem>
+                                    <DropdownMenuItem className='cursor-pointer' onClick={handleEmployeeToChange}>Software Engineer</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu> */}
                         </div>
                     </div>
                     <div>
@@ -177,7 +199,7 @@ const EmployeeModal = ({ type, employee, refreshEmployees }: { type: 'Add' | 'Ed
                                 <Button
                                     variant={"outline"}
                                     className={cn(
-                                        "w-full justify-start text-left font-normal",
+                                        "w-full justify-start text-left font-normal cursor-pointer",
                                         !employeeToChange.hireDate && "text-muted-foreground"
                                     )}
                                 >
@@ -204,6 +226,7 @@ const EmployeeModal = ({ type, employee, refreshEmployees }: { type: 'Add' | 'Ed
                             onClick={handleEmployee}
                             color="success"
                             disabled={disableBtn}
+                            className='cursor-pointer'
                         >
                             {type === "Add" ? "Add" : "Update"} Employee
                         </Button>

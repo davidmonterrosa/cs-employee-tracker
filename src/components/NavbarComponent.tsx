@@ -48,9 +48,9 @@ const NavbarComponent = () => {
         <h1 className="text-xl font-bold">Employee Tracker</h1>
         {isLoggedIn && (
             <DropdownMenu>
-                <DropdownMenuTrigger className="border px-4 py-2 rounded-md hover:cursor-pointer">{name}</DropdownMenuTrigger>
+                <DropdownMenuTrigger className="border px-4 py-2 rounded-md cursor-pointer">{name}</DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                    <DropdownMenuItem className='hover:cursor-pointer' onClick={logout}>Sign out</DropdownMenuItem>
+                    <DropdownMenuItem className='cursor-pointer' onClick={logout}>Sign out</DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         )}
