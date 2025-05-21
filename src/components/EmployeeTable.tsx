@@ -10,6 +10,7 @@ import { Button } from './ui/button';
 import { TableHeader, TableRow, TableHead, TableBody, TableCell, Table } from './ui/table';
 import EmployeeModal from './EmployeeModal';
 import { useAppContext } from '@/lib/context/context';
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from './ui/pagination';
 
 const EmployeeTable = () => {
     const { push } = useRouter();
@@ -19,11 +20,20 @@ const EmployeeTable = () => {
     // useStates
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [sortedEmployees, setSortedEmployees] = useState<Employee[]>([]);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const PAGESIZE = 10;
 
     const [token, setToken] = useState('');
 
     const [sortBy, setSortBy] = useState("");
     const [sortByJob, setSortByJob] = useState("");
+
+    const paginatedEmployees = sortedEmployees.slice(
+        (currentPage - 1) * PAGESIZE,
+        currentPage * PAGESIZE
+    )
+
+    const totalPages = Math.ceil(sortedEmployees.length / PAGESIZE)
 
     // Function to get employees
     const handleGetEmployees = async () => {
@@ -41,6 +51,29 @@ const EmployeeTable = () => {
         }
     };
 
+    const handlePrevious = () => {
+        if(currentPage <= 1) {
+            setCurrentPage(1);
+        } else {
+            setCurrentPage(currentPage - 1);
+        }
+    }
+
+    const handleNext = () => {
+        if(currentPage === totalPages) {
+            setCurrentPage(totalPages);
+        } else {
+            setCurrentPage(currentPage + 1);
+        }
+    }
+    const handleSelectPage = () => {
+        if(currentPage === totalPages) {
+            setCurrentPage(totalPages);
+        } else {
+            setCurrentPage(currentPage + 1);
+        }
+    }
+
     // Updating sort functions
     const changeSortBy = (value: string) => {
         if (value == "name" && sortBy == "name") {
@@ -54,6 +87,7 @@ const EmployeeTable = () => {
         if (sortByJob) {
             setSortByJob("");
         }
+        setCurrentPage(1);
     };
 
     const changeSortByJob = (jobTitle: string) => {
@@ -76,7 +110,7 @@ const EmployeeTable = () => {
     const handleViewEmployee = async (id: number) => {
         await setEmployeeId(id);
 
-        push('/employee-page');
+        push(`/${id}`);
     };
 
     // Getting the user token from storage
@@ -133,6 +167,8 @@ const EmployeeTable = () => {
         };
 
         handleSorting();
+
+            // Variable to show employees in pages
 
     }, [employees, sortBy, sortByJob]);
 
@@ -192,8 +228,6 @@ const EmployeeTable = () => {
                             </DropdownMenuContent>
                         </DropdownMenu>
 
-
-
                     </div>
                 </div>
             </div>
@@ -219,13 +253,13 @@ const EmployeeTable = () => {
                             <TableCell></TableCell>
                         </TableRow>
                     ) : (
-                        sortedEmployees.map((employee, idx) => (
+                        paginatedEmployees.map((employee, idx) => (
                             <TableRow key={idx}>
                                 <TableCell className="font-medium">{employee.name}</TableCell>
                                 <TableCell>{employee.jobTitle}</TableCell>
                                 <TableCell>{employee.hireDate}</TableCell>
                                 <TableCell className="flex gap-3 justify-end">
-                                    <Button onClick={() => handleViewEmployee(employee.id)}>
+                                    <Button className='hover:cursor-pointer' onClick={() => handleViewEmployee(employee.id)}>
                                         View
                                     </Button>
                                     <EmployeeModal type="Edit" employee={employee} refreshEmployees={handleGetEmployees} />
@@ -238,6 +272,23 @@ const EmployeeTable = () => {
                     )}
                 </TableBody>
             </Table>
+            <Pagination>
+                <PaginationContent>
+                    <PaginationItem>
+                        <PaginationPrevious onClick={handlePrevious}/>
+                    </PaginationItem>
+
+                    <PaginationItem>
+                        {Array.from({ length: totalPages }, (_, idx) => (
+                            <PaginationLink key={idx} onClick={() => setCurrentPage(idx + 1)}>{idx + 1}</PaginationLink>
+                        ))}
+                    </PaginationItem>
+
+                    <PaginationItem>
+                        <PaginationNext onClick={handleNext}/>
+                    </PaginationItem>
+                </PaginationContent>
+            </Pagination>
             {/* Display table - End */}
         </>
     )
