@@ -31,6 +31,7 @@ const EmployeeViewPage: React.FC<EmployeeViewPageProps> = ({employeeId}) => {
         handleToken();
     }, []);
 
+    
     useEffect(() => {
         const getEmployee = async () => {
             if (token != '') {
@@ -39,6 +40,7 @@ const EmployeeViewPage: React.FC<EmployeeViewPageProps> = ({employeeId}) => {
                     setEmployee(tempEmployee);
             }
         }
+        
 
         if (employeeId != 0) {
             getEmployee();
@@ -58,7 +60,7 @@ const EmployeeViewPage: React.FC<EmployeeViewPageProps> = ({employeeId}) => {
                     {
                         employee && (
                             isEditing ?
-                                <EmployeeEditView employee={employee} setEdit={setIsEditing} />
+                                <EmployeeEditView employee={employee} setEdit={setIsEditing} employeeIdNum={employeeId}/>
                                 :
                                 <EmployeeView employee={employee} setEdit={setIsEditing} />
                         )

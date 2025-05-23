@@ -12,7 +12,8 @@ import { Calendar } from './ui/calendar';
 import { CalendarIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { formatDateForInput, formatDateFromInput } from '@/lib/services/formatting-service';
 
 
 // Valid values for type: "Add" & "Edit"
@@ -25,14 +26,16 @@ const EmployeeModal = ({ type, employee, refreshEmployees }: { type: 'Add' | 'Ed
         name: "",
         jobTitle: "",
         hireDate: "",
+        details: "",
+        status: "",
     });
 
     const [token, setToken] = useState('');
 
     const disableBtn =
-        employeeToChange.name.trim() != "" ||
-        employeeToChange.jobTitle.trim() != "" &&
-        employeeToChange.hireDate != "";
+        employeeToChange.name.trim() == "" ||
+        employeeToChange.jobTitle.trim() == "" ||
+        employeeToChange.hireDate == "";
 
     // Modal Functions
     const onOpenModal = () => {
@@ -44,8 +47,9 @@ const EmployeeModal = ({ type, employee, refreshEmployees }: { type: 'Add' | 'Ed
     };
 
     const onCloseModal = () => {
+        console.log(openModal);
         setOpenModal(false);
-        setEmployeeToChange({ id: 0, name: "", jobTitle: "", hireDate: "" });
+        setEmployeeToChange({ id: 0, name: "", jobTitle: "", hireDate: "", details: "", status: "" });
     };
 
     // Change employee functions
@@ -56,6 +60,14 @@ const EmployeeModal = ({ type, employee, refreshEmployees }: { type: 'Add' | 'Ed
         });
     };
 
+    // Change employee functions
+    const handleJobTitleChange = (jobTitle: string) => {
+        setEmployeeToChange({
+            ...employeeToChange,
+            jobTitle: jobTitle
+        });
+    };
+
     const handleEmployeeToChangeHireDate = (date: string) => {
         setEmployeeToChange({
             ...employeeToChange,
@@ -63,22 +75,7 @@ const EmployeeModal = ({ type, employee, refreshEmployees }: { type: 'Add' | 'Ed
         });
     };
 
-    // Date functions
-    const formatDateForInput = (date: string) => {
-        if (!date) return undefined;
 
-        const [year, month, day] = date.toString().split("-").map(Number);
-        return new Date(year, month - 1, day);
-    };
-
-    const formatDateFromInput = (date: Date | undefined) => {
-        if (!date) return "";
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, "0");
-        const day = String(date.getDate()).padStart(2, "0");
-
-        return `${year}-${month}-${day}`;
-    };
 
     // Add & Edit function
     const handleEmployee = async () => {
@@ -104,6 +101,8 @@ const EmployeeModal = ({ type, employee, refreshEmployees }: { type: 'Add' | 'Ed
                 name: "",
                 jobTitle: "",
                 hireDate: "",
+                details: "",
+                status: "",
             });
         } catch (error) {
             console.log("error", error);
@@ -162,32 +161,16 @@ const EmployeeModal = ({ type, employee, refreshEmployees }: { type: 'Add' | 'Ed
                             <div className="mb-2 block">
                                 <Label htmlFor="jobTitle">Job title</Label>
                             </div>
-                            <Input
-                                id="jobTitle"
-                                value={employeeToChange.jobTitle}
-                                onChange={handleEmployeeToChange}
-                            />
-                            <select name="Job Title" id="jobTitle" className='hover:cursor-pointer'>
-                                {
-                                    <option disabled selected value={employeeToChange.jobTitle}>{employeeToChange.jobTitle === '' ? "Select Job Title" : `${employeeToChange.jobTitle}`}</option>
-                                }
-                                <option className='hover:cursor-pointer' value="Customer Support">Customer Support</option>
-                                <option className='hover:cursor-pointer' value="IT Support Specialist">IT Support Specialist</option>
-                                <option className='hover:cursor-pointer' value="Software Engineer">Software Engineer</option>
-                            </select>
-                            {/* <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button id="jobTitle" variant="outline" className="ml-3 text-sm border rounded p-1 cursor-pointer">
-                                       {`${employeeToChange.jobTitle}`}
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent className='bg-gray-300 z-50'>
-                                    <DropdownMenuItem className='cursor-pointer' onClick={handleEmployeeToChange}>Job Title</DropdownMenuItem>
-                                    <DropdownMenuItem className='cursor-pointer' onClick={handleEmployeeToChange}>Customer Support</DropdownMenuItem>
-                                    <DropdownMenuItem className='cursor-pointer' onClick={handleEmployeeToChange}>IT Support Specialist</DropdownMenuItem>
-                                    <DropdownMenuItem className='cursor-pointer' onClick={handleEmployeeToChange}>Software Engineer</DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu> */}
+                            <Select defaultValue={employeeToChange.jobTitle} onValueChange={(newJobTitle) => {handleJobTitleChange(newJobTitle)}}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder={employeeToChange.jobTitle.trim() === "" ? "Select New Job Title" : `${employeeToChange.jobTitle}`} />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem className="hover:cursor-pointer" value="Customer Support">Customer Support</SelectItem>
+                                    <SelectItem className="hover:cursor-pointer" value="IT Support Specialist">IT Support Specialist</SelectItem>
+                                    <SelectItem className="hover:cursor-pointer" value="Software Engineer">Software Engineer</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
                     </div>
                     <div>
